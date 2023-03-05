@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "9c2c9f54-e233-47b8-b58d-dbc796c41d42",
+		"name": "ContactBookAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "Get List of all Contacts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Check if response type is json\", function () {\r",
+									"    pm.response.to.be.json;\r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+									"    pm.expect(typeof(responseBody)).to.be.equal(\"object\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/contacts",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Contact by Keyword",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check if status code is 200\", ()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Check if current contact lastName is Jackson\",()=>{\r",
+									"const responseBody = pm.response.json();\r",
+									"console.log();\r",
+									"    pm.expect(responseBody[0].lastName).to.be.equal(\"Jackson\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/contacts/search/Michael",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contacts",
+								"search",
+								"Michael"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Creat Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check if status code is 201 or 202\", ()=> {\r",
+									"    pm.expect(pm.response.code, \"Status code property\").to.be.oneOf([201, 202]),\r",
+									"     respBody = pm.response.json();\r",
+									"    pm.environment.set(\"contactID\", respBody.contact.id);\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Lebron\",\r\n    \"lastName\": \"James\",\r\n    \"email\": \"lebronjames1@gmail.com\",\r\n    \"phone\": \"+1 100 200 300\",\r\n    \"comments\": \"The King\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contacts",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patch",
+			"item": [
+				{
+					"name": "Edit Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check if status code is 404\", ()=>{\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Edit\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contacts/{{contactID}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contacts",
+								"{{contactID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete",
+			"item": [
+				{
+					"name": "Delete Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check if the contact is deleted\", ()=> {\r",
+									"    const respBody = pm.response.json();\r",
+									"    pm.expect(respBody.msg, \"MSG property\").to.be.equal(\"Contact deleted: \" + pm.environment.get(\"contactID\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/contacts/{{contactID}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contacts",
+								"{{contactID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
